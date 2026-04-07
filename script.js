@@ -86,109 +86,185 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('scroll', highlightActiveLink);
     highlightActiveLink();
+    
+    // Initialize Typing Animations
+    initTypingAnimations();
 });
+
 // Initialize AOS (Animate on Scroll)
 AOS.init({
-    duration: 800,           // Animation duration in ms
-    offset: 100,            // Offset (in px) from the original trigger point
-    delay: 0,               // Default delay
-    once: true,             // Whether animation should happen only once
-    mirror: false,          // Whether elements should animate out while scrolling past them
-    easing: 'ease-in-out',  // Easing function
-    disable: false,         // Disable on mobile? false = enabled on all devices
+    duration: 800,
+    offset: 100,
+    delay: 0,
+    once: true,
+    mirror: false,
+    easing: 'ease-in-out',
 });
 
-// Hamburger Menu Toggle
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const navMenu = document.getElementById('navMenu');
-
-if (hamburgerBtn && navMenu) {
-    hamburgerBtn.addEventListener('click', () => {
-        hamburgerBtn.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
-    // Close menu when a link is clicked
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            hamburgerBtn.classList.remove('active');
-            navMenu.classList.remove('active');
+// ============ TYPING ANIMATION SYSTEM - FAST ============
+function initTypingAnimations() {
+    // Typing speed configuration - FAST
+    const TYPING_SPEED = 5; // milliseconds per character (very fast)
+    
+    // Function to type text into an element
+    async function typeText(element, text, speed = TYPING_SPEED) {
+        if (!element) return;
+        
+        // Clear the element
+        element.textContent = '';
+        
+        // Add cursor animation
+        element.classList.add('typing-cursor');
+        
+        // Type each character
+        for (let i = 0; i <= text.length; i++) {
+            element.textContent = text.substring(0, i);
+            await new Promise(resolve => setTimeout(resolve, speed));
+        }
+        
+        // Remove cursor when done
+        element.classList.remove('typing-cursor');
+    }
+    
+    // Define all text content for typing animation
+    const typingContent = {
+        // Hero section
+        '.typing-title': 'Cybersecurity | Web Dev | Networking',
+        '.typing-desc': 'Systems thinker securing high-reliability infrastructures. Passionate about FinTech, critical infrastructure, and emerging tech.',
+        '.typing-paragraph': "I'm a systems thinker focused on securing complex, high-reliability infrastructures through cybersecurity. My core expertise spans cybersecurity, web development, and networking, while I actively work to expand my domain into software engineering. I'm developing hands-on experience across the cybersecurity spectrum—penetration testing, web/API security, and cloud architecture security—with an emphasis on adapting security frameworks to high-stakes environments. A past project designing an automated trading system gave me practical insight into real-time data integrity, automation, and operational risk—principles that translate directly to securing FinTech, industrial systems, and critical infrastructure. My approach is straightforward: to secure a system, you must understand how it's built, how it fails, and how it's attacked. I validate concepts through applied projects—cloud security configurations, controlled penetration tests—always identifying transferable architectural and security patterns across domains. Beyond my technical work, I maintain strong interests in financial markets (forex), real estate, AI/ML, and emerging technologies. These domains inform my broader perspective while I continue deepening my core expertise in cybersecurity, networking, web development, and software. I'm building a robust technical foundation, continuously expanded through hands-on experimentation and cross-domain curiosity, preparing for advanced work in protecting the systems that underpin modern industry and society.",
+        
+        // Philosophy section
+        '.typing-philosophy-quote': 'To secure a system, you must understand how it\'s built, how it fails, and how it\'s attacked.',
+        '.typing-philosophy-desc': 'I validate concepts through applied projects — cloud security configurations, controlled penetration tests — always identifying transferable architectural and security patterns across domains.',
+        
+        // Experience descriptions
+        '.typing-exp1-desc': 'Leading initiatives in tech excellence, cybersecurity awareness, and hands-on projects bridging development and security.',
+        '.typing-exp2-desc': 'Gained exposure to NOC operations, assisted with Google Earth coordinate requests, and focused on self-directed learning to improve networking knowledge.',
+        
+        // Project descriptions
+        '.typing-project1-desc': 'Designed a real-time automated trading system with focus on data integrity, automation, and operational risk management.',
+        '.typing-project2-desc': 'A tool to monitor and record fuel purchases, consumption, and costs over time.',
+        '.typing-project3-desc': 'Developed a responsive company website for The Lord Publication, focusing on content organization, user-friendly navigation, and brand presentation.',
+        
+        // Education description
+        '.typing-edu1-desc': 'Networking, Security, Web Development & Systems Design.',
+        
+        // Certifications
+        '.typing-cert1': '🔹 Mastercard - Cybersecurity Job Simulation',
+        '.typing-cert2': '🔹 Deloitte Australia - Cyber Job Simulation',
+        '.typing-cert3': '🔹 Cisco - Networking Basics',
+        '.typing-cert4': '🔹 Introduction to Network Routing',
+        '.typing-cert5': '🔹 Networking Foundations: Networking basics'
+    };
+    
+    // Titles with even faster speed
+    const titleContent = {
+        '.typing-exp1-title': 'Founder',
+        '.typing-exp2-title': 'Intern',
+        '.typing-project1-title': 'Automated Trading System',
+        '.typing-project2-title': 'Fuel expense tracker',
+        '.typing-project3-title': 'The Lord Publication (Company Website)',
+        '.typing-edu1-title': 'University of Cape Coast',
+        '.typing-edu2-title': 'Keta Senior High Technical School',
+        '.typing-edu3-title': 'Cisco Networking Academy'
+    };
+    
+    // Intersection Observer for typing animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.hasAttribute('data-typed')) {
+                entry.target.setAttribute('data-typed', 'true');
+                const text = entry.target.getAttribute('data-text');
+                if (text) {
+                    typeText(entry.target, text);
+                }
+            }
         });
-    });
-}
-
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        const targetId = this.getAttribute('href');
-        
-        // Skip if it's just "#" or empty
-        if (targetId === '#' || targetId === '') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-            e.preventDefault();
-            targetElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-});
-
-// Optional: Add scroll spy to highlight active nav link
-const sections = document.querySelectorAll('section[id]');
-const navItems = document.querySelectorAll('.nav-link');
-
-function updateActiveNavOnScroll() {
-    let current = '';
-    const scrollPosition = window.scrollY + 100; // Offset for navbar
-
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-            current = section.getAttribute('id');
-        }
-    });
-
-    navItems.forEach(link => {
-        link.classList.remove('active');
-        const href = link.getAttribute('href').substring(1);
-        if (href === current) {
-            link.classList.add('active');
-        }
-    });
-}
-
-// Add scroll event listener if you want active nav highlighting
-// window.addEventListener('scroll', updateActiveNavOnScroll);
-// updateActiveNavOnScroll(); // Call initially
-
-// Optional: Add a "scroll to top" button functionality (if you add one)
-// You can uncomment this if you add a scroll-to-top button in your HTML
-/*
-const scrollToTopBtn = document.getElementById('scrollToTop');
-if (scrollToTopBtn) {
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-            scrollToTopBtn.classList.add('visible');
-        } else {
-            scrollToTopBtn.classList.remove('visible');
-        }
+    }, { threshold: 0.2, rootMargin: '0px 0px -30px 0px' });
+    
+    // Setup main content typing
+    Object.keys(typingContent).forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(element => {
+            element.setAttribute('data-text', typingContent[selector]);
+            element.textContent = '';
+            observer.observe(element);
+        });
     });
     
-    scrollToTopBtn.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+    // Setup title typing (even faster - speed 3)
+    async function typeTitleFast(element, text) {
+        if (!element) return;
+        element.textContent = '';
+        element.classList.add('typing-cursor');
+        for (let i = 0; i <= text.length; i++) {
+            element.textContent = text.substring(0, i);
+            await new Promise(resolve => setTimeout(resolve, 3)); // Super fast for titles
+        }
+        element.classList.remove('typing-cursor');
+    }
+    
+    const titleObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.hasAttribute('data-typed')) {
+                entry.target.setAttribute('data-typed', 'true');
+                const text = entry.target.getAttribute('data-text');
+                if (text) {
+                    typeTitleFast(entry.target, text);
+                }
+            }
+        });
+    }, { threshold: 0.2 });
+    
+    Object.keys(titleContent).forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(element => {
+            element.setAttribute('data-text', titleContent[selector]);
+            element.textContent = '';
+            titleObserver.observe(element);
         });
     });
+    
+    // Handle skills and languages fade-in
+    const skillsContainer = document.querySelector('.typing-skills');
+    const languagesContainer = document.querySelector('.typing-languages');
+    
+    if (skillsContainer) {
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.hasAttribute('data-visible')) {
+                    entry.target.setAttribute('data-visible', 'true');
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        fadeObserver.observe(skillsContainer);
+        skillsContainer.style.opacity = '0';
+        skillsContainer.style.transform = 'translateY(20px)';
+        skillsContainer.style.transition = 'all 0.5s ease';
+    }
+    
+    if (languagesContainer) {
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.hasAttribute('data-visible')) {
+                    entry.target.setAttribute('data-visible', 'true');
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        fadeObserver.observe(languagesContainer);
+        languagesContainer.style.opacity = '0';
+        languagesContainer.style.transform = 'translateY(20px)';
+        languagesContainer.style.transition = 'all 0.5s ease';
+    }
+    
+    console.log('Typing animations initialized (fast mode)');
 }
-*/
 
-// Log initialization (optional)
-console.log('Portfolio website loaded with scroll animations!');
-
+// Log initialization
+console.log('Portfolio website loaded with scroll animations and fast typing!');
