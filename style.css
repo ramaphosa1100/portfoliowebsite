@@ -656,4 +656,35 @@ footer {
     .project-title {
         font-size: 1.1rem;
     }
+
+    /* Typing cursor animation */
+.typing-cursor {
+    position: relative;
+}
+
+.typing-cursor::after {
+    content: '|';
+    position: relative;
+    right: 0;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Ensure typing elements have proper spacing */
+[data-text] {
+    min-height: 1.2em;
+    display: inline-block;
+}
+
+/* Skills and languages fade-in */
+.typing-skills,
+.typing-languages {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
 }
