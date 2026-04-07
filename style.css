@@ -657,16 +657,21 @@ footer {
         font-size: 1.1rem;
     }
 
-    /* Typing cursor animation */
+    
+}
+/* Typing cursor animation */
 .typing-cursor {
     position: relative;
+    display: inline-block;
 }
 
 .typing-cursor::after {
     content: '|';
     position: relative;
     right: 0;
-    animation: blink 1s step-end infinite;
+    animation: blink 0.8s step-end infinite;
+    font-weight: 300;
+    opacity: 1;
 }
 
 @keyframes blink {
@@ -674,17 +679,65 @@ footer {
     50% { opacity: 0; }
 }
 
-/* Ensure typing elements have proper spacing */
+/* Ensure typing elements have proper spacing and visibility */
 [data-text] {
     min-height: 1.2em;
     display: inline-block;
+    width: 100%;
+    line-height: 1.6;
 }
 
-/* Skills and languages fade-in */
+/* Skills and languages fade-in with smooth animation */
 .typing-skills,
 .typing-languages {
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.5s ease;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* When visible - add this class via JavaScript */
+.typing-skills[data-visible="true"],
+.typing-languages[data-visible="true"] {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Optional: Add a subtle glow to the cursor for better visibility */
+.typing-cursor::after {
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+/* For dark/light mode compatibility */
+@media (prefers-color-scheme: dark) {
+    .typing-cursor::after {
+        text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    }
+}
+
+/* Prevent layout shift during typing */
+.typing-title, 
+.typing-desc, 
+.typing-paragraph,
+.typing-philosophy-quote,
+.typing-philosophy-desc,
+.typing-exp1-desc,
+.typing-exp2-desc,
+.typing-project1-desc,
+.typing-project2-desc,
+.typing-project3-desc,
+.typing-edu1-desc {
+    min-height: 1.5em;
+    word-break: break-word;
+}
+
+/* Make sure paragraphs don't overflow on mobile */
+@media (max-width: 768px) {
+    [data-text] {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    .typing-cursor::after {
+        font-size: 1rem;
+    }
 }
