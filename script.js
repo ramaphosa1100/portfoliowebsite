@@ -191,3 +191,4 @@ if (scrollToTopBtn) {
 
 // Log initialization (optional)
 console.log('Portfolio website loaded with scroll animations!');
+
